@@ -1,0 +1,48 @@
+{
+  "name": "rob-widgets",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Project to test out some concepts.",
+  "main": "server.js",
+  "dependencies": {
+    "react-bootstrap": "^0.30.3",
+    "body-parser": "^1.4.3",
+    "express": "^4.4.5",
+    "react": "^15.3.1",
+    "react-dom": "^15.3.1"
+  },
+  "devDependencies": {
+    "babel-preset-es2015": "^6.13.2",
+    "babel-preset-react": "^6.11.1",
+    "babelify": "^7.3.0",
+    "browserify": "^13.1.0",
+    "event-stream": "^3.3.4",
+    "glob": "^7.0.6",
+    "gulp": "^3.9.1",
+    "gulp-batch": "^1.0.5",
+    "gulp-watch": "^4.3.9",
+    "jquery": "^3.1.0",
+    "react-native": "^0.32.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js & gulp watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ToxicSockWarrior/rob-widgets.git"
+  },
+  "keywords": [
+    "react"
+  ],
+  "author": "petehunt",
+  "bugs": {
+    "url": "https://github.com/reactjs/react-tutorial/issues"
+  },
+  "homepage": "https://github.com/reactjs/react-tutorial",
+  "engines": {
+    "node": "0.12.x"
+  }
+}
