@@ -1,3 +1,24 @@
 .widgetContainer {
     position: fixed;
 }
+
+.widgetHeader-grid {
+    width: 100%;
+}
+
+.collapseWidget-button {
+    border: 2px solid gray;
+    border-radius: 25px;
+    width: 21px;
+    height: 21px;
+    background-color: #A0A0A0;
+    color: white;
+    text-align: center;
+    float: right;
+}
+
+.collapseWidget-arrow {
+    top: -3px;
+    position: relative;
+    height: 15px;
+}

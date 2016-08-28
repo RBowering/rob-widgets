@@ -2,6 +2,103 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Panel = require("react-bootstrap").Panel;
 var $ = require("jquery");
+var Row = require("react-bootstrap").Row;
+var Col = require("react-bootstrap").Col;
+
+const expandedButtonStyles = {
+    /* Safari */
+    "-webkit-transform": "rotate(-90deg)",
+
+    /* Firefox */
+    "-moz-transform": "rotate(-90deg)",
+
+    /* IE */
+    "-ms-transform": "rotate(-90deg)",
+
+    /* Opera */
+    "-o-transform": "rotate(-90deg)",
+
+    /* Internet Explorer */
+    "filter": "progid:DXImageTransform.Microsoft.BasicImage(rotation=3)"
+};
+
+var WidgetHeader = React.createClass({
+    propTypes: {
+        title: React.PropTypes.string,
+        onMouseMove: React.PropTypes.func,
+        onMouseDown: React.PropTypes.func,
+        onMouseUp: React.PropTypes.func,
+        collapseCallback: React.PropTypes.func,
+        defaultExpanded: React.PropTypes.bool
+    },
+    getInitialState: function () {
+        var collapseStyle = this.props.defaultExpanded ? expandedButtonStyles : {};
+
+        return {
+            collapseButtonStyle: collapseStyle,
+            expanded: this.props.defaultExpanded,
+            title: this.props.title,
+            rowStyle: {width: "inherit"}
+        }
+    },
+    getDefaultProps: function () {
+        return {
+            title: "",
+            defaultExpanded: false,
+
+            // Initialize empty functions for our events to prevent errors
+            onMouseMove: function () {},
+            onMouseDown: function () {},
+            onMouseUp: function () {},
+            collapseCallback: function () {}
+        }
+    },
+    toggleCollapse: function () {
+        this.props.collapseCallback();
+
+        // Keep our current header width after we collapse
+        var currentWidth = $(ReactDOM.findDOMNode(this)).innerWidth();
+
+
+        if (!this.state.expanded) {
+            this.setState({
+                collapseButtonStyle: expandedButtonStyles,
+                expanded: true,
+                rowStyle: {
+                    width: "inherit"
+                }
+            });
+        }
+        else {
+            this.setState({
+                collapseButtonStyle: {},
+                expanded: false,
+                rowStyle: {
+                    width: currentWidth
+                }
+            });
+        }
+    },
+    onMouseDown: function (e) {
+        this.props.onMouseDown(e);
+    },
+    render: function () {
+        return (
+                <Row style={this.state.rowStyle} onMouseDown={this.onMouseDown}>
+                    <Col md={11}>
+                        {this.state.title}
+                    </Col>
+                    <Col md={1}>
+                        <div onClick={this.toggleCollapse} className="collapseWidget-button">
+                            <img style={this.state.collapseButtonStyle} className="collapseWidget-arrow" src="/assets/img/glyphicons-225-chevron-left.png"/>
+                        </div>
+                    </Col>
+                </Row>
+        )
+    }
+});
+
+
 
 
 var WidgetContainer = React.createClass({
@@ -9,13 +106,32 @@ var WidgetContainer = React.createClass({
         // Our initial X and Y position
         initialX: React.PropTypes.number,
         initialY: React.PropTypes.number,
-        title: React.PropTypes.string
+
+        // Our initial title for the panel heading
+        title: React.PropTypes.string,
+
+        // Initial width and height of the widget
+        initialWidth: React.PropTypes.string,
+        initialHeight: React.PropTypes.string,
+
+        // Whether we should allow the user to resize the widget
+        // TODO: Investigate how to do resizing properly
+        allowResize: React.PropTypes.bool
+    },
+    getDefaultProps: function () {
+        var document = $('document');
+
+        return {
+            initialX: document.width / 2,
+            initialY: document.height / 2,
+            initialWidth: "700px",
+            initialHeight: "500px"
+        }
     },
     getInitialState: function () {
         return {
 
-            // Put the widget in the top left corner to start with
-            // TODO: Make this initialize better (either off a property or intelligently
+            // Initialize the widget styles based off of passed in props
             styles: {
                 top: this.props.initialY,
                 left: this.props.initialX,
@@ -30,11 +146,21 @@ var WidgetContainer = React.createClass({
                 top: 0,
                 left: 0
             },
+
+            // Current height and width of the
+            currentWidth: this.props.initialWidth,
+            currentHeight: this.props.initialHeight,
+
+            // The collapse state of the widget
+            collapsed: false
         }
 
     },
-
-    // TODO: Need to bind this in a way where ti doesn't collide with other components
+    toggleCollapse: function () {
+        this.setState({
+            collapsed: !this.state.collapsed
+        });
+    },
     actuateMove: function (e) {
       if (this.state.dragging) {
 
@@ -63,24 +189,28 @@ var WidgetContainer = React.createClass({
             mouseOffset: {
                 top: e.pageY - pos.top,
                 left: e.pageX - pos.left
-            }
+            },
         });
+
+        // Bind these to the document in case the mouse jumps into another element as its moving
+        // TODO: Figure out how to get around the iFrame in OverwatchOpen not propagating the event
+        document.addEventListener("mousemove", this.actuateMove);
+        document.addEventListener("mouseup", this.stopDrag);
 
     },
     stopDrag: function (e) {
+        // Unbind our drag event listeners
+        document.removeEventListener("mousemove", this.actuateMove);
+        document.removeEventListener("mouseup", this.stopDrag);
+
+        // Update our state
         this.setState({dragging: false});
     },
-
-    // TODO: Remove placeholder <OverWatchOpen> tag in place of the component's child
-    // TODO: Get the mouse events on just the header
     render: function () {
         return (
-            <div style={this.state.styles} onMouseDown={this.startDrag} onMouseUp={this.stopDrag} onMouseMove={this.actuateMove} className="widgetContainer">
-                <Panel header={this.props.title}>
+                <Panel expanded={!this.state.collapsed} eventKey="1" collapsible defaultExpanded={true} header={<WidgetHeader defaultExpanded={true} collapseCallback={this.toggleCollapse} onMouseDown={this.startDrag} title={this.props.title}/>} style={this.state.styles}  className="widgetContainer">
                     {this.props.children}
                 </Panel>
-
-            </div>
         )
     }
 });
