@@ -5,9 +5,10 @@ var gulp       = require('gulp'),
     browserify = require('browserify'),
     glob       = require('glob'),
     es         = require('event-stream'),
-    babelify = require('babelify'),
+    babelify   = require('babelify'),
     watch      = require('gulp-watch'),
-    batch      = require('gulp-batch');
+    batch      = require('gulp-batch'),
+    cleanCSS   = require('gulp-clean-css');
 
 
 gulp.task('browserify', function(done) {
@@ -32,8 +33,22 @@ gulp.task('browserify', function(done) {
     });
 });
 
+gulp.task('minify-css', function() {
+    return gulp.src('./src/css/**/*.css')
+        .pipe(cleanCSS({compatibility: 'ie8'}))
+        .pipe(gulp.dest('./public/css'));
+});
+
 gulp.task('watch', function () {
+
+    gulp.start('browserify');
+    gulp.start('minify-css');
+
     watch('./src/js/**/*.js', batch(function (events, done) {
         gulp.start('browserify', done);
+    }));
+
+    watch('./src/css/**/*.css', batch(function (events, done) {
+        gulp.start('minify-css', done);
     }));
 });
