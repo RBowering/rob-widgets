@@ -18,6 +18,7 @@
     position: relative;
     top: 3px;
     margin-right: 5px;
+    cursor: pointer;
 }
 
 .collapseWidget-arrow {
@@ -51,6 +52,7 @@
     color: red;
     font-size: 22px;
     float:right;
+    cursor: pointer;
 }
 
 .widgetHeader-buttons {
@@ -60,4 +62,9 @@
 .widgetHeader-buttonWrapper {
     position: relative;
     top: 3px;
+}
+
+.widgetHeader {
+    user-select:none;
+    cursor: default;
 }

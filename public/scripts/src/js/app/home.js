@@ -49020,7 +49020,7 @@ var WidgetHeader = React.createClass({
     render: function render() {
         return React.createElement(
             Row,
-            { style: this.state.rowStyle, onMouseDown: this.onMouseDown },
+            { style: this.state.rowStyle, onMouseDown: this.onMouseDown, className: 'widgetHeader' },
             React.createElement(
                 Col,
                 { md: 7 },

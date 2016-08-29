@@ -91,7 +91,7 @@ var WidgetHeader = React.createClass({
     // TODO: Get this PNG out of here and replace it with bootstrap glyphicon tag
     render: function () {
         return (
-                <Row style={this.state.rowStyle} onMouseDown={this.onMouseDown}>
+                <Row style={this.state.rowStyle} onMouseDown={this.onMouseDown} className="widgetHeader">
                     <Col md={7}>
                         {this.state.title}
                     </Col>
