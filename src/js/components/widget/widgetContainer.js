@@ -88,7 +88,6 @@ var WidgetHeader = React.createClass({
     onMouseDown: function (e) {
         this.props.onMouseDown(e);
     },
-    // TODO: Get this PNG out of here and replace it with bootstrap glyphicon tag
     render: function () {
         return (
                 <Row style={this.state.rowStyle} onMouseDown={this.onMouseDown} className="widgetHeader">
@@ -97,8 +96,8 @@ var WidgetHeader = React.createClass({
                     </Col>
                     <Col md={5} className="widgetHeader-buttonWrapper">
                         <div className="widgetHeader-buttons">
-                            <div onClick={this.toggleCollapse} className="collapseWidget-button">
-                                <img style={this.state.collapseButtonStyle} className="collapseWidget-arrow" src="/assets/img/glyphicons-225-chevron-left.png"/>
+                            <div onClick={this.toggleCollapse} style={this.state.collapseButtonStyle} className="collapseWidget-button">
+                                <Glyphicon glyph="chevron-left"/>
                             </div>
                             <div className="closeWidget-button">
                                 <Glyphicon onClick={this.closeWidget} glyph="remove-sign"/>
