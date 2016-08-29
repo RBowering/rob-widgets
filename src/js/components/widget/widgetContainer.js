@@ -100,7 +100,7 @@ var WidgetHeader = React.createClass({
 
 
 
-
+// TODO: Add ability to resize the widget window
 var WidgetContainer = React.createClass({
     propTypes: {
         // Our initial X and Y position
@@ -152,7 +152,10 @@ var WidgetContainer = React.createClass({
             currentHeight: this.props.initialHeight,
 
             // The collapse state of the widget
-            collapsed: false
+            collapsed: false,
+
+            // Flag to control 'closing' the widget
+            closed: false
         }
 
     },
@@ -207,11 +210,19 @@ var WidgetContainer = React.createClass({
         this.setState({dragging: false});
     },
     render: function () {
-        return (
-                <Panel expanded={!this.state.collapsed} eventKey="1" collapsible defaultExpanded={true} header={<WidgetHeader defaultExpanded={true} collapseCallback={this.toggleCollapse} onMouseDown={this.startDrag} title={this.props.title}/>} style={this.state.styles}  className="widgetContainer">
+        if (closed) {
+            return ;
+        }
+        else {
+            return (
+                <Panel expanded={!this.state.collapsed} eventKey="1" collapsible defaultExpanded={true}
+                       header={<WidgetHeader defaultExpanded={true} collapseCallback={this.toggleCollapse}
+                                             onMouseDown={this.startDrag} title={this.props.title}/>}
+                       style={this.state.styles} className="widgetContainer">
                     {this.props.children}
                 </Panel>
-        )
+            )
+        }
     }
 });
 

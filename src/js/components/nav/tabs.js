@@ -22,13 +22,6 @@ var TabNav = React.createClass({
         // Update the current tab
         this.setState({tabSelected: tab});
     },
-    openStream: function () {
-        ReactDOM.render(
-            <WidgetContainer initialX={100} initialY={200} title="Drag Me!">
-                <OverWatchOpen/>
-            </WidgetContainer>,
-            document.getElementById("widgetTarget"));
-    },
     // TODO: Remove placeholders with something meaningful
     render: function () {
         return (
@@ -39,14 +32,7 @@ var TabNav = React.createClass({
                             <Tab eventKey={1} title="Test Tab">
                                 <Well>Lorem Ipsum</Well>
                             </Tab>
-                            <Tab eventKey={2} title="Overwatch Stream Widget Inside">
-                                <Row>
-                                    <Col xs={4} md={4}/>
-                                    <Col xs={4} md={4}>
-                                        <Button bsStyle="primary" onClick={this.openStream}>Open Stream Widget</Button>
-                                    </Col>
-                                    <Col xs={4} md={4}/>
-                                </Row>
+                            <Tab eventKey={2} title="Test tab 2">
                             </Tab>
                         </Tabs>
                     </Col>

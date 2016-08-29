@@ -48648,6 +48648,7 @@ var React = require("react");
 var ReactDOM = require("react-dom");
 var MainNav = require("../components/nav/mainNav");
 var TabNav = require("../components/nav/tabs");
+var WidgetMenu = require("../components/nav/widgetMenu");
 
 var Home = React.createClass({
     displayName: "Home",
@@ -48657,14 +48658,14 @@ var Home = React.createClass({
             "div",
             null,
             React.createElement(MainNav, null),
-            React.createElement(TabNav, { tabSelected: 1 })
+            React.createElement(WidgetMenu, null)
         );
     }
 });
 
 ReactDOM.render(React.createElement(Home, null), document.getElementById('content'));
 
-},{"../components/nav/mainNav":428,"../components/nav/tabs":429,"react":421,"react-dom":257}],427:[function(require,module,exports){
+},{"../components/nav/mainNav":428,"../components/nav/tabs":429,"../components/nav/widgetMenu":430,"react":421,"react-dom":257}],427:[function(require,module,exports){
 "use strict";
 
 //TODO: Use this component as a basis for a general "Twitch Embedded" component
@@ -48791,13 +48792,6 @@ var TabNav = React.createClass({
         this.setState({ tabSelected: tab });
     },
 
-    openStream: function openStream() {
-        ReactDOM.render(React.createElement(
-            WidgetContainer,
-            { initialX: 100, initialY: 200, title: "Drag Me!" },
-            React.createElement(OverWatchOpen, null)
-        ), document.getElementById("widgetTarget"));
-    },
     // TODO: Remove placeholders with something meaningful
     render: function render() {
         return React.createElement(
@@ -48821,25 +48815,7 @@ var TabNav = React.createClass({
                                 "Lorem Ipsum"
                             )
                         ),
-                        React.createElement(
-                            Tab,
-                            { eventKey: 2, title: "Overwatch Stream Widget Inside" },
-                            React.createElement(
-                                Row,
-                                null,
-                                React.createElement(Col, { xs: 4, md: 4 }),
-                                React.createElement(
-                                    Col,
-                                    { xs: 4, md: 4 },
-                                    React.createElement(
-                                        Button,
-                                        { bsStyle: "primary", onClick: this.openStream },
-                                        "Open Stream Widget"
-                                    )
-                                ),
-                                React.createElement(Col, { xs: 4, md: 4 })
-                            )
-                        )
+                        React.createElement(Tab, { eventKey: 2, title: "Test tab 2" })
                     )
                 )
             )
@@ -48849,7 +48825,129 @@ var TabNav = React.createClass({
 
 module.exports = TabNav;
 
-},{"../embed/twitch/overwatchopen":427,"../widget/widgetContainer":430,"react":421,"react-bootstrap":246,"react-dom":257}],430:[function(require,module,exports){
+},{"../embed/twitch/overwatchopen":427,"../widget/widgetContainer":431,"react":421,"react-bootstrap":246,"react-dom":257}],430:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+var WidgetContainer = require('../widget/widgetContainer');
+var OverWatchOpen = require("../embed/twitch/overwatchopen");
+var ButtonGroup = require("react-bootstrap").ButtonGroup;
+var Button = require("react-bootstrap").Button;
+var Glyphicon = require("react-bootstrap").Glyphicon;
+var $ = require('jquery');
+
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
+var AddWidgetButton = React.createClass({
+    displayName: 'AddWidgetButton',
+
+    propTypes: {
+        changeMenuCallback: React.PropTypes.func
+    },
+    changeMenu: function changeMenu() {
+        this.props.changeMenuCallback(2);
+    },
+    render: function render() {
+        return React.createElement(
+            'button',
+            { onClick: this.changeMenu, type: 'button', className: 'addWidget-button' },
+            React.createElement(
+                'span',
+                { className: 'addWidget-text' },
+                '+'
+            )
+        );
+    }
+});
+
+var SelectWidgetMenu = React.createClass({
+    displayName: 'SelectWidgetMenu',
+
+    propTypes: {
+        changeMenuCallback: React.PropTypes.func
+    },
+    goBack: function goBack() {
+        this.props.changeMenuCallback(1);
+    },
+    openStream: function openStream() {
+        // Make a unique id so we can create a new element and not collide with any other ids out there
+        var id = guid();
+
+        // Append the target element to the body
+        // TODO: See if there is a react-specific way to do this
+        $('body').append('<div id="' + id + '"></div>');
+
+        ReactDOM.render(React.createElement(
+            WidgetContainer,
+            { initialX: 100, initialY: 200, title: 'Overwatch Open' },
+            React.createElement(OverWatchOpen, null)
+        ), document.getElementById(id));
+
+        // Go back to the add widget menu
+        this.goBack();
+    },
+    render: function render() {
+        return React.createElement(
+            ButtonGroup,
+            { vertical: true },
+            React.createElement(
+                Button,
+                { onClick: this.openStream },
+                'Overwatch Stream'
+            ),
+            React.createElement(
+                Button,
+                { onClick: this.goBack },
+                React.createElement(Glyphicon, { glyph: 'arrow-left' })
+            )
+        );
+    }
+});
+
+var WidgetMenu = React.createClass({
+    displayName: 'WidgetMenu',
+
+    getInitialState: function getInitialState() {
+        return {
+            menuState: 1
+        };
+    },
+    changeMenu: function changeMenu(state) {
+        this.setState({
+            menuState: state
+        });
+    },
+    getMenuContent: function getMenuContent() {
+        switch (this.state.menuState) {
+            case 1:
+                return React.createElement(AddWidgetButton, { changeMenuCallback: this.changeMenu });
+                break;
+            case 2:
+                return React.createElement(SelectWidgetMenu, { changeMenuCallback: this.changeMenu });
+                break;
+            default:
+                return React.createElement(AddWidgetButton, { changeMenuCallback: this.changeMenu });
+                break;
+        }
+    },
+    render: function render() {
+        return React.createElement(
+            'div',
+            { className: 'widgetMenu-container' },
+            this.getMenuContent()
+        );
+    }
+});
+
+module.exports = WidgetMenu;
+
+},{"../embed/twitch/overwatchopen":427,"../widget/widgetContainer":431,"jquery":157,"react":421,"react-bootstrap":246,"react-dom":257}],431:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -48958,6 +49056,7 @@ var WidgetHeader = React.createClass({
     }
 });
 
+// TODO: Add ability to resize the widget window
 var WidgetContainer = React.createClass({
     displayName: 'WidgetContainer',
 
@@ -49011,7 +49110,10 @@ var WidgetContainer = React.createClass({
             currentHeight: this.props.initialHeight,
 
             // The collapse state of the widget
-            collapsed: false
+            collapsed: false,
+
+            // Flag to control 'closing' the widget
+            closed: false
         };
     },
     toggleCollapse: function toggleCollapse() {
@@ -49063,11 +49165,18 @@ var WidgetContainer = React.createClass({
         this.setState({ dragging: false });
     },
     render: function render() {
-        return React.createElement(
-            Panel,
-            { expanded: !this.state.collapsed, eventKey: '1', collapsible: true, defaultExpanded: true, header: React.createElement(WidgetHeader, { defaultExpanded: true, collapseCallback: this.toggleCollapse, onMouseDown: this.startDrag, title: this.props.title }), style: this.state.styles, className: 'widgetContainer' },
-            this.props.children
-        );
+        if (closed) {
+            return;
+        } else {
+            return React.createElement(
+                Panel,
+                { expanded: !this.state.collapsed, eventKey: '1', collapsible: true, defaultExpanded: true,
+                    header: React.createElement(WidgetHeader, { defaultExpanded: true, collapseCallback: this.toggleCollapse,
+                        onMouseDown: this.startDrag, title: this.props.title }),
+                    style: this.state.styles, className: 'widgetContainer' },
+                this.props.children
+            );
+        }
     }
 });
 
