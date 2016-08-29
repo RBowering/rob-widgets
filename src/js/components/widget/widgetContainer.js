@@ -88,6 +88,9 @@ var WidgetHeader = React.createClass({
     onMouseDown: function (e) {
         this.props.onMouseDown(e);
     },
+    stopPropagation: function (e) {
+          e.stopPropagation();
+    },
     render: function () {
         return (
                 <Row style={this.state.rowStyle} onMouseDown={this.onMouseDown} className="widgetHeader">
@@ -96,10 +99,10 @@ var WidgetHeader = React.createClass({
                     </Col>
                     <Col md={5} className="widgetHeader-buttonWrapper">
                         <div className="widgetHeader-buttons">
-                            <div onClick={this.toggleCollapse} style={this.state.collapseButtonStyle} className="collapseWidget-button">
+                            <div onMouseDown={this.stopPropagation} onClick={this.toggleCollapse} style={this.state.collapseButtonStyle} className="collapseWidget-button">
                                 <Glyphicon glyph="chevron-left"/>
                             </div>
-                            <div className="closeWidget-button">
+                            <div onMouseDown={this.stopPropagation} className="closeWidget-button">
                                 <Glyphicon onClick={this.closeWidget} glyph="remove-sign"/>
                             </div>
                         </div>

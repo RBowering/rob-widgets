@@ -49016,6 +49016,9 @@ var WidgetHeader = React.createClass({
     onMouseDown: function onMouseDown(e) {
         this.props.onMouseDown(e);
     },
+    stopPropagation: function stopPropagation(e) {
+        e.stopPropagation();
+    },
     render: function render() {
         return React.createElement(
             Row,
@@ -49033,12 +49036,12 @@ var WidgetHeader = React.createClass({
                     { className: 'widgetHeader-buttons' },
                     React.createElement(
                         'div',
-                        { onClick: this.toggleCollapse, style: this.state.collapseButtonStyle, className: 'collapseWidget-button' },
+                        { onMouseDown: this.stopPropagation, onClick: this.toggleCollapse, style: this.state.collapseButtonStyle, className: 'collapseWidget-button' },
                         React.createElement(Glyphicon, { glyph: 'chevron-left' })
                     ),
                     React.createElement(
                         'div',
-                        { className: 'closeWidget-button' },
+                        { onMouseDown: this.stopPropagation, className: 'closeWidget-button' },
                         React.createElement(Glyphicon, { onClick: this.closeWidget, glyph: 'remove-sign' })
                     )
                 )
