@@ -48647,8 +48647,11 @@ module.exports = warning;
 var React = require("react");
 var ReactDOM = require("react-dom");
 var MainNav = require("../components/nav/mainNav");
-var TabNav = require("../components/nav/tabs");
 var WidgetMenu = require("../components/nav/widgetMenu");
+var Jumbotron = require("react-bootstrap").Jumbotron;
+var Grid = require("react-bootstrap").Grid;
+var Row = require("react-bootstrap").Row;
+var Col = require("react-bootstrap").Col;
 
 var Home = React.createClass({
     displayName: "Home",
@@ -48658,14 +48661,40 @@ var Home = React.createClass({
             "div",
             null,
             React.createElement(MainNav, null),
-            React.createElement(WidgetMenu, null)
+            React.createElement(WidgetMenu, null),
+            React.createElement(
+                Grid,
+                null,
+                React.createElement(
+                    Row,
+                    null,
+                    React.createElement(
+                        Col,
+                        { md: 12 },
+                        React.createElement(
+                            Jumbotron,
+                            null,
+                            React.createElement(
+                                "h1",
+                                null,
+                                "Widget Test"
+                            ),
+                            React.createElement(
+                                "p",
+                                null,
+                                "This is a simple proof of concept of widgets that can be moved around the screen at the user's leisure. Click the red + button to get started."
+                            )
+                        )
+                    )
+                )
+            )
         );
     }
 });
 
 ReactDOM.render(React.createElement(Home, null), document.getElementById('content'));
 
-},{"../components/nav/mainNav":428,"../components/nav/tabs":429,"../components/nav/widgetMenu":430,"react":421,"react-dom":257}],427:[function(require,module,exports){
+},{"../components/nav/mainNav":428,"../components/nav/widgetMenu":429,"react":421,"react-bootstrap":246,"react-dom":257}],427:[function(require,module,exports){
 "use strict";
 
 //TODO: Use this component as a basis for a general "Twitch Embedded" component
@@ -48742,20 +48771,7 @@ var MainNav = React.createClass({
                     )
                 )
             ),
-            React.createElement(
-                Nav,
-                { bsStyle: "pills", activeKey: parseInt(this.state.navSelected), onSelect: this.handleTabSelect },
-                React.createElement(
-                    NavItem,
-                    { eventKey: 1, href: "pages/page1.html" },
-                    "Link"
-                ),
-                React.createElement(
-                    NavItem,
-                    { eventKey: 2, href: "pages/page2.html" },
-                    "Link"
-                )
-            )
+            React.createElement(Nav, { bsStyle: "pills", activeKey: parseInt(this.state.navSelected), onSelect: this.handleTabSelect })
         );
     }
 });
@@ -48763,69 +48779,6 @@ var MainNav = React.createClass({
 module.exports = MainNav;
 
 },{"react":421,"react-bootstrap":246}],429:[function(require,module,exports){
-"use strict";
-
-var React = require("react");
-var ReactDOM = require("react-dom");
-var Tabs = require("react-bootstrap").Tabs;
-var Tab = require("react-bootstrap").Tab;
-var Grid = require("react-bootstrap").Grid;
-var Row = require("react-bootstrap").Row;
-var Col = require("react-bootstrap").Col;
-var Well = require("react-bootstrap").Well;
-var Button = require("react-bootstrap").Button;
-var WidgetContainer = require("../widget/widgetContainer");
-var OverWatchOpen = require("../embed/twitch/overwatchopen");
-
-var TabNav = React.createClass({
-    displayName: "TabNav",
-
-    propTypes: {
-        // Keep track of our currently selected tab so it can be selected
-        tabSelected: React.PropTypes.number
-    },
-    getInitialState: function getInitialState() {
-        return { "tabSelected": this.props.tabSelected };
-    },
-    handleSelect: function handleSelect(tab) {
-        // Update the current tab
-        this.setState({ tabSelected: tab });
-    },
-
-    // TODO: Remove placeholders with something meaningful
-    render: function render() {
-        return React.createElement(
-            Grid,
-            null,
-            React.createElement(
-                Row,
-                { className: "tabRow" },
-                React.createElement(
-                    Col,
-                    { xs: 12, md: 12 },
-                    React.createElement(
-                        Tabs,
-                        { activeKey: this.state.tabSelected, onSelect: this.handleSelect, id: "subNav-tabs" },
-                        React.createElement(
-                            Tab,
-                            { eventKey: 1, title: "Test Tab" },
-                            React.createElement(
-                                Well,
-                                null,
-                                "Lorem Ipsum"
-                            )
-                        ),
-                        React.createElement(Tab, { eventKey: 2, title: "Test tab 2" })
-                    )
-                )
-            )
-        );
-    }
-});
-
-module.exports = TabNav;
-
-},{"../embed/twitch/overwatchopen":427,"../widget/widgetContainer":431,"react":421,"react-bootstrap":246,"react-dom":257}],430:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -48947,7 +48900,7 @@ var WidgetMenu = React.createClass({
 
 module.exports = WidgetMenu;
 
-},{"../embed/twitch/overwatchopen":427,"../widget/widgetContainer":431,"jquery":157,"react":421,"react-bootstrap":246,"react-dom":257}],431:[function(require,module,exports){
+},{"../embed/twitch/overwatchopen":427,"../widget/widgetContainer":430,"jquery":157,"react":421,"react-bootstrap":246,"react-dom":257}],430:[function(require,module,exports){
 'use strict';
 
 var React = require('react');

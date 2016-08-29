@@ -30,8 +30,6 @@ var MainNav = React.createClass({
                     </Navbar.Brand>
                 </Navbar.Header>
                 <Nav bsStyle="pills" activeKey={parseInt(this.state.navSelected)} onSelect={this.handleTabSelect}>
-                    <NavItem eventKey={1} href="pages/page1.html">Link</NavItem>
-                    <NavItem eventKey={2} href="pages/page2.html">Link</NavItem>
                 </Nav>
             </Navbar>
         )
