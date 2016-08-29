@@ -5,6 +5,7 @@ var OverWatchOpen = require("../embed/twitch/overwatchopen");
 var ButtonGroup = require("react-bootstrap").ButtonGroup;
 var Button = require("react-bootstrap").Button;
 var Glyphicon = require("react-bootstrap").Glyphicon;
+var FormControl = require("react-bootstrap").FormControl;
 var $ = require('jquery');
 
 function guid() {
@@ -38,13 +39,18 @@ var SelectWidgetMenu = React.createClass({
     goBack: function () {
         this.props.changeMenuCallback(1);
     },
-    openStream: function () {
+    createDOMElement: function () {
         // Make a unique id so we can create a new element and not collide with any other ids out there
         var id = guid();
 
         // Append the target element to the body
         // TODO: See if there is a react-specific way to do this
         $('body').append('<div id="' + id + '"></div>');
+
+        return id;
+    },
+    openStream: function () {
+        var id = this.createDOMElement();
 
         ReactDOM.render(
             <WidgetContainer initialX={100} initialY={200} title="Overwatch Open">
@@ -55,10 +61,23 @@ var SelectWidgetMenu = React.createClass({
         // Go back to the add widget menu
         this.goBack();
     },
+    addStickyNote: function () {
+        var id = this.createDOMElement();
+
+        ReactDOM.render(
+            <WidgetContainer initialX={100} initialY={200} title="Sticky Note">
+                <FormControl componentClass="textarea" placeholder="..."/>
+            </WidgetContainer>,
+            document.getElementById(id));
+
+        // Go back to the add widget menu
+        this.goBack();
+    },
     render: function () {
         return (
             <ButtonGroup vertical>
                 <Button onClick={this.openStream}>Overwatch Stream</Button>
+                <Button onClick={this.addStickyNote}>Sticky Note</Button>
                 <Button onClick={this.goBack}><Glyphicon glyph="arrow-left"/></Button>
             </ButtonGroup>
         )

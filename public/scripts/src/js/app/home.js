@@ -48788,6 +48788,7 @@ var OverWatchOpen = require("../embed/twitch/overwatchopen");
 var ButtonGroup = require("react-bootstrap").ButtonGroup;
 var Button = require("react-bootstrap").Button;
 var Glyphicon = require("react-bootstrap").Glyphicon;
+var FormControl = require("react-bootstrap").FormControl;
 var $ = require('jquery');
 
 function guid() {
@@ -48828,7 +48829,7 @@ var SelectWidgetMenu = React.createClass({
     goBack: function goBack() {
         this.props.changeMenuCallback(1);
     },
-    openStream: function openStream() {
+    createDOMElement: function createDOMElement() {
         // Make a unique id so we can create a new element and not collide with any other ids out there
         var id = guid();
 
@@ -48836,10 +48837,27 @@ var SelectWidgetMenu = React.createClass({
         // TODO: See if there is a react-specific way to do this
         $('body').append('<div id="' + id + '"></div>');
 
+        return id;
+    },
+    openStream: function openStream() {
+        var id = this.createDOMElement();
+
         ReactDOM.render(React.createElement(
             WidgetContainer,
             { initialX: 100, initialY: 200, title: 'Overwatch Open' },
             React.createElement(OverWatchOpen, null)
+        ), document.getElementById(id));
+
+        // Go back to the add widget menu
+        this.goBack();
+    },
+    addStickyNote: function addStickyNote() {
+        var id = this.createDOMElement();
+
+        ReactDOM.render(React.createElement(
+            WidgetContainer,
+            { initialX: 100, initialY: 200, title: 'Sticky Note' },
+            React.createElement(FormControl, { componentClass: 'textarea', placeholder: '...' })
         ), document.getElementById(id));
 
         // Go back to the add widget menu
@@ -48853,6 +48871,11 @@ var SelectWidgetMenu = React.createClass({
                 Button,
                 { onClick: this.openStream },
                 'Overwatch Stream'
+            ),
+            React.createElement(
+                Button,
+                { onClick: this.addStickyNote },
+                'Sticky Note'
             ),
             React.createElement(
                 Button,
@@ -49000,12 +49023,12 @@ var WidgetHeader = React.createClass({
             { style: this.state.rowStyle, onMouseDown: this.onMouseDown },
             React.createElement(
                 Col,
-                { md: 10 },
+                { md: 7 },
                 this.state.title
             ),
             React.createElement(
                 Col,
-                { md: 2, className: 'widgetHeader-buttonWrapper' },
+                { md: 5, className: 'widgetHeader-buttonWrapper' },
                 React.createElement(
                     'div',
                     { className: 'widgetHeader-buttons' },
