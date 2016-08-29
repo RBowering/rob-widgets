@@ -92,10 +92,10 @@ var WidgetHeader = React.createClass({
     render: function () {
         return (
                 <Row style={this.state.rowStyle} onMouseDown={this.onMouseDown}>
-                    <Col md={10}>
+                    <Col md={7}>
                         {this.state.title}
                     </Col>
-                    <Col md={2} className="widgetHeader-buttonWrapper">
+                    <Col md={5} className="widgetHeader-buttonWrapper">
                         <div className="widgetHeader-buttons">
                             <div onClick={this.toggleCollapse} className="collapseWidget-button">
                                 <img style={this.state.collapseButtonStyle} className="collapseWidget-arrow" src="/assets/img/glyphicons-225-chevron-left.png"/>
