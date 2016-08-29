@@ -94,7 +94,7 @@ var WidgetHeader = React.createClass({
     render: function () {
         return (
                 <Row style={this.state.rowStyle} onMouseDown={this.onMouseDown} className="widgetHeader">
-                    <Col md={7}>
+                    <Col md={7} className="widgetHeader-title">
                         {this.state.title}
                     </Col>
                     <Col md={5} className="widgetHeader-buttonWrapper">

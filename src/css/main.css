@@ -80,3 +80,7 @@
     user-select:none;
     cursor: default;
 }
+
+.widgetHeader-title {
+    top: 6px;
+}

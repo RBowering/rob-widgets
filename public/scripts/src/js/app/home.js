@@ -49025,7 +49025,7 @@ var WidgetHeader = React.createClass({
             { style: this.state.rowStyle, onMouseDown: this.onMouseDown, className: 'widgetHeader' },
             React.createElement(
                 Col,
-                { md: 7 },
+                { md: 7, className: 'widgetHeader-title' },
                 this.state.title
             ),
             React.createElement(
