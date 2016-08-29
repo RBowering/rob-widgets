@@ -48909,6 +48909,7 @@ var Panel = require("react-bootstrap").Panel;
 var $ = require("jquery");
 var Row = require("react-bootstrap").Row;
 var Col = require("react-bootstrap").Col;
+var Glyphicon = require("react-bootstrap").Glyphicon;
 
 var expandedButtonStyles = {
     /* Safari */
@@ -48936,7 +48937,8 @@ var WidgetHeader = React.createClass({
         onMouseDown: React.PropTypes.func,
         onMouseUp: React.PropTypes.func,
         collapseCallback: React.PropTypes.func,
-        defaultExpanded: React.PropTypes.bool
+        defaultExpanded: React.PropTypes.bool,
+        closeWidgetCallback: React.PropTypes.func
     },
     getInitialState: function getInitialState() {
         var collapseStyle = this.props.defaultExpanded ? expandedButtonStyles : {};
@@ -48957,7 +48959,8 @@ var WidgetHeader = React.createClass({
             onMouseMove: function onMouseMove() {},
             onMouseDown: function onMouseDown() {},
             onMouseUp: function onMouseUp() {},
-            collapseCallback: function collapseCallback() {}
+            collapseCallback: function collapseCallback() {},
+            closeWidgetCallback: function closeWidgetCallback() {}
         };
     },
     toggleCollapse: function toggleCollapse() {
@@ -48984,25 +48987,38 @@ var WidgetHeader = React.createClass({
             });
         }
     },
+    closeWidget: function closeWidget() {
+        this.props.closeWidgetCallback();
+    },
     onMouseDown: function onMouseDown(e) {
         this.props.onMouseDown(e);
     },
+    // TODO: Get this PNG out of here and replace it with bootstrap glyphicon tag
     render: function render() {
         return React.createElement(
             Row,
             { style: this.state.rowStyle, onMouseDown: this.onMouseDown },
             React.createElement(
                 Col,
-                { md: 11 },
+                { md: 10 },
                 this.state.title
             ),
             React.createElement(
                 Col,
-                { md: 1 },
+                { md: 2, className: 'widgetHeader-buttonWrapper' },
                 React.createElement(
                     'div',
-                    { onClick: this.toggleCollapse, className: 'collapseWidget-button' },
-                    React.createElement('img', { style: this.state.collapseButtonStyle, className: 'collapseWidget-arrow', src: '/assets/img/glyphicons-225-chevron-left.png' })
+                    { className: 'widgetHeader-buttons' },
+                    React.createElement(
+                        'div',
+                        { onClick: this.toggleCollapse, className: 'collapseWidget-button' },
+                        React.createElement('img', { style: this.state.collapseButtonStyle, className: 'collapseWidget-arrow', src: '/assets/img/glyphicons-225-chevron-left.png' })
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'closeWidget-button' },
+                        React.createElement(Glyphicon, { onClick: this.closeWidget, glyph: 'remove-sign' })
+                    )
                 )
             )
         );
@@ -49026,7 +49042,6 @@ var WidgetContainer = React.createClass({
         initialHeight: React.PropTypes.string,
 
         // Whether we should allow the user to resize the widget
-        // TODO: Investigate how to do resizing properly
         allowResize: React.PropTypes.bool
     },
     getDefaultProps: function getDefaultProps() {
@@ -49117,15 +49132,20 @@ var WidgetContainer = React.createClass({
         // Update our state
         this.setState({ dragging: false });
     },
+    closeWidget: function closeWidget() {
+        // Set the state to closed
+        this.setState({ closed: true });
+    },
     render: function render() {
-        if (closed) {
-            return;
+        if (this.state.closed) {
+            return null;
         } else {
             return React.createElement(
                 Panel,
                 { expanded: !this.state.collapsed, eventKey: '1', collapsible: true, defaultExpanded: true,
                     header: React.createElement(WidgetHeader, { defaultExpanded: true, collapseCallback: this.toggleCollapse,
-                        onMouseDown: this.startDrag, title: this.props.title }),
+                        onMouseDown: this.startDrag, title: this.props.title,
+                        closeWidgetCallback: this.closeWidget }),
                     style: this.state.styles, className: 'widgetContainer' },
                 this.props.children
             );

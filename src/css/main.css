@@ -14,7 +14,10 @@
     background-color: #A0A0A0;
     color: white;
     text-align: center;
-    float: right;
+    float: left;
+    position: relative;
+    top: 3px;
+    margin-right: 5px;
 }
 
 .collapseWidget-arrow {
@@ -42,4 +45,19 @@
     position:fixed;
     bottom:60px;
     right:60px;
+}
+
+.closeWidget-button {
+    color: red;
+    font-size: 22px;
+    float:right;
+}
+
+.widgetHeader-buttons {
+    float:right;
+}
+
+.widgetHeader-buttonWrapper {
+    position: relative;
+    top: 3px;
 }

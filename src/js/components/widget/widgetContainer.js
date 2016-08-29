@@ -4,6 +4,7 @@ var Panel = require("react-bootstrap").Panel;
 var $ = require("jquery");
 var Row = require("react-bootstrap").Row;
 var Col = require("react-bootstrap").Col;
+var Glyphicon = require("react-bootstrap").Glyphicon;
 
 const expandedButtonStyles = {
     /* Safari */
@@ -29,7 +30,8 @@ var WidgetHeader = React.createClass({
         onMouseDown: React.PropTypes.func,
         onMouseUp: React.PropTypes.func,
         collapseCallback: React.PropTypes.func,
-        defaultExpanded: React.PropTypes.bool
+        defaultExpanded: React.PropTypes.bool,
+        closeWidgetCallback: React.PropTypes.func
     },
     getInitialState: function () {
         var collapseStyle = this.props.defaultExpanded ? expandedButtonStyles : {};
@@ -50,7 +52,8 @@ var WidgetHeader = React.createClass({
             onMouseMove: function () {},
             onMouseDown: function () {},
             onMouseUp: function () {},
-            collapseCallback: function () {}
+            collapseCallback: function () {},
+            closeWidgetCallback: function () {}
         }
     },
     toggleCollapse: function () {
@@ -79,26 +82,33 @@ var WidgetHeader = React.createClass({
             });
         }
     },
+    closeWidget: function () {
+        this.props.closeWidgetCallback();
+    },
     onMouseDown: function (e) {
         this.props.onMouseDown(e);
     },
+    // TODO: Get this PNG out of here and replace it with bootstrap glyphicon tag
     render: function () {
         return (
                 <Row style={this.state.rowStyle} onMouseDown={this.onMouseDown}>
-                    <Col md={11}>
+                    <Col md={10}>
                         {this.state.title}
                     </Col>
-                    <Col md={1}>
-                        <div onClick={this.toggleCollapse} className="collapseWidget-button">
-                            <img style={this.state.collapseButtonStyle} className="collapseWidget-arrow" src="/assets/img/glyphicons-225-chevron-left.png"/>
+                    <Col md={2} className="widgetHeader-buttonWrapper">
+                        <div className="widgetHeader-buttons">
+                            <div onClick={this.toggleCollapse} className="collapseWidget-button">
+                                <img style={this.state.collapseButtonStyle} className="collapseWidget-arrow" src="/assets/img/glyphicons-225-chevron-left.png"/>
+                            </div>
+                            <div className="closeWidget-button">
+                                <Glyphicon onClick={this.closeWidget} glyph="remove-sign"/>
+                            </div>
                         </div>
                     </Col>
                 </Row>
         )
     }
 });
-
-
 
 // TODO: Add ability to resize the widget window
 var WidgetContainer = React.createClass({
@@ -115,7 +125,6 @@ var WidgetContainer = React.createClass({
         initialHeight: React.PropTypes.string,
 
         // Whether we should allow the user to resize the widget
-        // TODO: Investigate how to do resizing properly
         allowResize: React.PropTypes.bool
     },
     getDefaultProps: function () {
@@ -209,15 +218,20 @@ var WidgetContainer = React.createClass({
         // Update our state
         this.setState({dragging: false});
     },
+    closeWidget: function () {
+        // Set the state to closed
+        this.setState({closed: true});
+    },
     render: function () {
-        if (closed) {
-            return ;
+        if (this.state.closed) {
+            return null;
         }
         else {
             return (
                 <Panel expanded={!this.state.collapsed} eventKey="1" collapsible defaultExpanded={true}
                        header={<WidgetHeader defaultExpanded={true} collapseCallback={this.toggleCollapse}
-                                             onMouseDown={this.startDrag} title={this.props.title}/>}
+                                             onMouseDown={this.startDrag} title={this.props.title}
+                                             closeWidgetCallback={this.closeWidget}/>}
                        style={this.state.styles} className="widgetContainer">
                     {this.props.children}
                 </Panel>
