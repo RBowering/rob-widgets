@@ -54,7 +54,7 @@ var TwitchStreamRow = React.createClass({
         var id = this.createDOMElement();
 
         ReactDOM.render(
-            <WidgetContainer closeCallback={this.enableOpenStreamButton} initialX={100} initialY={200} title={this.props.streamInfo.channel.status}>
+            <WidgetContainer closeCallback={this.enableOpenStreamButton} initialX={150} initialY={200} title={this.props.streamInfo.channel.status}>
                 <div dangerouslySetInnerHTML={this.iframe(this.props.streamInfo.channel.name)}></div>
             </WidgetContainer>,
             document.getElementById(id));

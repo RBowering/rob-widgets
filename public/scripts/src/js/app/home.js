@@ -48785,7 +48785,7 @@ var TwitchStreamRow = React.createClass({
 
         ReactDOM.render(React.createElement(
             WidgetContainer,
-            { closeCallback: this.enableOpenStreamButton, initialX: 100, initialY: 200, title: this.props.streamInfo.channel.status },
+            { closeCallback: this.enableOpenStreamButton, initialX: 150, initialY: 200, title: this.props.streamInfo.channel.status },
             React.createElement('div', { dangerouslySetInnerHTML: this.iframe(this.props.streamInfo.channel.name) })
         ), document.getElementById(id));
 
@@ -49021,7 +49021,7 @@ var SelectWidgetMenu = React.createClass({
 
         ReactDOM.render(React.createElement(
             WidgetContainer,
-            { initialX: 100, initialY: 200, title: 'Overwatch Open' },
+            { initialX: 100, initialY: 300, title: 'Overwatch Open' },
             React.createElement(OverWatchOpen, null)
         ), document.getElementById(id));
 
@@ -49045,7 +49045,7 @@ var SelectWidgetMenu = React.createClass({
 
         ReactDOM.render(React.createElement(
             WidgetContainer,
-            { initialX: 100, initialY: 200, title: 'Top 10 Overwatch Streams' },
+            { initialX: 100, initialY: 100, title: 'Top 10 Overwatch Streams' },
             React.createElement(TopStreams, null)
         ), document.getElementById(id));
 

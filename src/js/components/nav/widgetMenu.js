@@ -54,7 +54,7 @@ var SelectWidgetMenu = React.createClass({
         var id = this.createDOMElement();
 
         ReactDOM.render(
-            <WidgetContainer initialX={100} initialY={200} title="Overwatch Open">
+            <WidgetContainer initialX={100} initialY={300} title="Overwatch Open">
                 <OverWatchOpen/>
             </WidgetContainer>,
             document.getElementById(id));
@@ -78,7 +78,7 @@ var SelectWidgetMenu = React.createClass({
         var id = this.createDOMElement();
 
         ReactDOM.render(
-            <WidgetContainer initialX={100} initialY={200} title="Top 10 Overwatch Streams">
+            <WidgetContainer initialX={100} initialY={100} title="Top 10 Overwatch Streams">
                 <TopStreams/>
             </WidgetContainer>,
             document.getElementById(id)
