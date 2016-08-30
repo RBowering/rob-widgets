@@ -7,6 +7,7 @@ var Button = require("react-bootstrap").Button;
 var Glyphicon = require("react-bootstrap").Glyphicon;
 var FormControl = require("react-bootstrap").FormControl;
 var $ = require('jquery');
+var TopStreams = require('../embed/twitch/topStreams');
 
 function guid() {
     function s4() {
@@ -73,9 +74,20 @@ var SelectWidgetMenu = React.createClass({
         // Go back to the add widget menu
         this.goBack();
     },
+    openTwitchStreams: function () {
+        var id = this.createDOMElement();
+
+        ReactDOM.render(
+            <WidgetContainer initialX={100} initialY={200} title="Top 10 Overwatch Streams">
+                <TopStreams/>
+            </WidgetContainer>,
+            document.getElementById(id)
+        );
+    },
     render: function () {
         return (
             <ButtonGroup vertical>
+                <Button onClick={this.openTwitchStreams}>Top 10 Overwatch Streams</Button>
                 <Button onClick={this.openStream}>Overwatch Stream</Button>
                 <Button onClick={this.addStickyNote}>Sticky Note</Button>
                 <Button onClick={this.goBack}><Glyphicon glyph="arrow-left"/></Button>

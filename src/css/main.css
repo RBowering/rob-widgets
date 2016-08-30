@@ -84,3 +84,7 @@
 .widgetHeader-title {
     top: 6px;
 }
+
+.topTwitchStreams-refreshButton {
+    float: right;
+}
