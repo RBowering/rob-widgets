@@ -25,6 +25,11 @@ var TwitchStreamRow = React.createClass({
     propTypes: {
         streamInfo: React.PropTypes.object
     },
+    getInitialState: function () {
+        return {
+            disableOpenButton: false
+        };
+    },
     createDOMElement: function () {
         // Make a unique id so we can create a new element and not collide with any other ids out there
         var id = guid();
@@ -40,16 +45,27 @@ var TwitchStreamRow = React.createClass({
             __html: iframeTemplate.replace("{CHANNEL}", channel)
         }
     },
+    enableOpenStreamButton: function () {
+        this.setState({
+            disableOpenButton: false
+        }) ;
+    },
     openStream: function () {
         var id = this.createDOMElement();
 
         ReactDOM.render(
-            <WidgetContainer initialX={100} initialY={200} title={this.props.streamInfo.channel.status}>
+            <WidgetContainer closeCallback={this.enableOpenStreamButton} initialX={100} initialY={200} title={this.props.streamInfo.channel.status}>
                 <div dangerouslySetInnerHTML={this.iframe(this.props.streamInfo.channel.name)}></div>
             </WidgetContainer>,
             document.getElementById(id));
+
+        this.setState({
+            disableOpenButton: true
+        });
     },
     render: function () {
+        var button = this.state.disableOpenButton ? <Button disabled className="twitchStreamRow-openStreamButton" onClick={this.openStream}>Open Stream</Button> : <Button className="twitchStreamRow-openStreamButton" onClick={this.openStream}>Open Stream</Button>;
+
         return (
             <Row className="twitchStreamRow">
                 <Col md={10}>
@@ -58,7 +74,7 @@ var TwitchStreamRow = React.createClass({
                     {this.props.streamInfo.channel.status}
                 </Col>
                 <Col md={2}>
-                    <Button className="twitchStreamRow-openStreamButton" onClick={this.openStream}>Open Stream</Button>
+                    {button}
                 </Col>
             </Row>
         )

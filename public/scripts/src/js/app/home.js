@@ -48755,6 +48755,11 @@ var TwitchStreamRow = React.createClass({
     propTypes: {
         streamInfo: React.PropTypes.object
     },
+    getInitialState: function getInitialState() {
+        return {
+            disableOpenButton: false
+        };
+    },
     createDOMElement: function createDOMElement() {
         // Make a unique id so we can create a new element and not collide with any other ids out there
         var id = guid();
@@ -48770,16 +48775,35 @@ var TwitchStreamRow = React.createClass({
             __html: iframeTemplate.replace("{CHANNEL}", channel)
         };
     },
+    enableOpenStreamButton: function enableOpenStreamButton() {
+        this.setState({
+            disableOpenButton: false
+        });
+    },
     openStream: function openStream() {
         var id = this.createDOMElement();
 
         ReactDOM.render(React.createElement(
             WidgetContainer,
-            { initialX: 100, initialY: 200, title: this.props.streamInfo.channel.status },
+            { closeCallback: this.enableOpenStreamButton, initialX: 100, initialY: 200, title: this.props.streamInfo.channel.status },
             React.createElement('div', { dangerouslySetInnerHTML: this.iframe(this.props.streamInfo.channel.name) })
         ), document.getElementById(id));
+
+        this.setState({
+            disableOpenButton: true
+        });
     },
     render: function render() {
+        var button = this.state.disableOpenButton ? React.createElement(
+            Button,
+            { disabled: true, className: 'twitchStreamRow-openStreamButton', onClick: this.openStream },
+            'Open Stream'
+        ) : React.createElement(
+            Button,
+            { className: 'twitchStreamRow-openStreamButton', onClick: this.openStream },
+            'Open Stream'
+        );
+
         return React.createElement(
             Row,
             { className: 'twitchStreamRow' },
@@ -48792,11 +48816,7 @@ var TwitchStreamRow = React.createClass({
             React.createElement(
                 Col,
                 { md: 2 },
-                React.createElement(
-                    Button,
-                    { className: 'twitchStreamRow-openStreamButton', onClick: this.openStream },
-                    'Open Stream'
-                )
+                button
             )
         );
     }
@@ -49238,7 +49258,10 @@ var WidgetContainer = React.createClass({
         initialHeight: React.PropTypes.string,
 
         // Whether we should allow the user to resize the widget
-        allowResize: React.PropTypes.bool
+        allowResize: React.PropTypes.bool,
+
+        // Function to run when the container 'closes'
+        closeCallback: React.PropTypes.func
     },
     getDefaultProps: function getDefaultProps() {
         var document = $('document');
@@ -49247,7 +49270,8 @@ var WidgetContainer = React.createClass({
             initialX: document.width / 2,
             initialY: document.height / 2,
             initialWidth: "700px",
-            initialHeight: "500px"
+            initialHeight: "500px",
+            closeCallback: function closeCallback() {}
         };
     },
     getInitialState: function getInitialState() {
@@ -49329,6 +49353,9 @@ var WidgetContainer = React.createClass({
         this.setState({ dragging: false });
     },
     closeWidget: function closeWidget() {
+        // Call the close callback that was given to the container
+        this.props.closeCallback();
+
         // Set the state to closed
         this.setState({ closed: true });
     },
