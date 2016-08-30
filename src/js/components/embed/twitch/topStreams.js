@@ -64,6 +64,8 @@ var TwitchStreamRow = React.createClass({
         });
     },
     render: function () {
+        // Disable the button if the stream is currently open
+        // TODO: Make the disable work after a stream list refresh
         var button = this.state.disableOpenButton ? <Button disabled className="twitchStreamRow-openStreamButton" onClick={this.openStream}>Open Stream</Button> : <Button className="twitchStreamRow-openStreamButton" onClick={this.openStream}>Open Stream</Button>;
 
         return (
@@ -91,6 +93,7 @@ var TopTwitchStreams = React.createClass({
         };
     },
     getStreams: function () {
+        // Get our stream list then set the state accordingly
         var innerThis = this;
         $.ajax("https://api.twitch.tv/kraken/streams?game=Overwatch&limit=10", {
             success: function(resp) {
@@ -110,29 +113,38 @@ var TopTwitchStreams = React.createClass({
         });
     },
     refresh: function () {
-        console.log("Refreshing");
+        // Set our state to loading
         this.setState({
             streams: {},
             error: false,
             loading: true
         });
-        this.setState(this.getStreams);
+
+        // Get the stream list
+        this.getStreams();
     },
     render: function () {
+        // If we're loading show a loading message
+        // TODO: Make this a spinner
         if (this.state.loading) {
             return (
                 <div>Loading...</div>
             )
         }
+
+        // If there's an error, let the user know
         else if (this.state.error) {
             return (
                 <div>Whoops... encountered an error while trying to fetch stream list.</div>
             )
         }
+
+        // Make our rows
         var streamRows = this.state.streams.map(function(stream) {
             return <TwitchStreamRow key={stream._id} streamInfo={stream}/>
         });
 
+        // Not loading, no errors, show the list of streams
         return (
             <div className="twitchStreams-wrapper">
                 {streamRows}
