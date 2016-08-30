@@ -83,12 +83,15 @@ var SelectWidgetMenu = React.createClass({
             </WidgetContainer>,
             document.getElementById(id)
         );
+
+        // Go back to the add widget menu
+        this.goBack();
     },
     render: function () {
         return (
             <ButtonGroup vertical>
                 <Button onClick={this.openTwitchStreams}>Top 10 Overwatch Streams</Button>
-                <Button onClick={this.openStream}>Overwatch Stream</Button>
+                <Button onClick={this.openStream}>Overwatch Open</Button>
                 <Button onClick={this.addStickyNote}>Sticky Note</Button>
                 <Button onClick={this.goBack}><Glyphicon glyph="arrow-left"/></Button>
             </ButtonGroup>

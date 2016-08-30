@@ -49048,6 +49048,9 @@ var SelectWidgetMenu = React.createClass({
             { initialX: 100, initialY: 200, title: 'Top 10 Overwatch Streams' },
             React.createElement(TopStreams, null)
         ), document.getElementById(id));
+
+        // Go back to the add widget menu
+        this.goBack();
     },
     render: function render() {
         return React.createElement(
@@ -49061,7 +49064,7 @@ var SelectWidgetMenu = React.createClass({
             React.createElement(
                 Button,
                 { onClick: this.openStream },
-                'Overwatch Stream'
+                'Overwatch Open'
             ),
             React.createElement(
                 Button,
