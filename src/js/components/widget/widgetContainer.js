@@ -127,7 +127,10 @@ var WidgetContainer = React.createClass({
         initialHeight: React.PropTypes.string,
 
         // Whether we should allow the user to resize the widget
-        allowResize: React.PropTypes.bool
+        allowResize: React.PropTypes.bool,
+
+        // Function to run when the container 'closes'
+        closeCallback: React.PropTypes.func
     },
     getDefaultProps: function () {
         var document = $('document');
@@ -136,7 +139,8 @@ var WidgetContainer = React.createClass({
             initialX: document.width / 2,
             initialY: document.height / 2,
             initialWidth: "700px",
-            initialHeight: "500px"
+            initialHeight: "500px",
+            closeCallback: function () {}
         }
     },
     getInitialState: function () {
@@ -221,6 +225,9 @@ var WidgetContainer = React.createClass({
         this.setState({dragging: false});
     },
     closeWidget: function () {
+        // Call the close callback that was given to the container
+        this.props.closeCallback();
+
         // Set the state to closed
         this.setState({closed: true});
     },
