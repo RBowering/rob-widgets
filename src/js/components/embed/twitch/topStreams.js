@@ -52,14 +52,13 @@ var TwitchStreamRow = React.createClass({
     render: function () {
         return (
             <Row className="twitchStreamRow">
-                <Col md={4}>
-                    <img src={this.props.streamInfo.preview.small}/>
-                </Col>
-                <Col md={4}>
+                <Col md={10}>
+                    <img src={this.props.streamInfo.preview.small} className="twitchStreamRow-image"/>
+
                     {this.props.streamInfo.channel.status}
                 </Col>
-                <Col md={4}>
-                    <Button onClick={this.openStream}>Open Stream</Button>
+                <Col md={2}>
+                    <Button className="twitchStreamRow-openStreamButton" onClick={this.openStream}>Open Stream</Button>
                 </Col>
             </Row>
         )

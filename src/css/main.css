@@ -88,3 +88,20 @@
 .topTwitchStreams-refreshButton {
     float: right;
 }
+
+.twitchStreamRow {
+    border-bottom: 1px dashed gray;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+}
+
+.twitchStreamRow-openStreamButton {
+    float: right;
+    top: 4px;
+    position: relative;
+}
+
+.twitchStreamRow-image {
+    padding-right: 5px;
+    float: left;
+}

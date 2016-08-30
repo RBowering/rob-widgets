@@ -48785,20 +48785,16 @@ var TwitchStreamRow = React.createClass({
             { className: 'twitchStreamRow' },
             React.createElement(
                 Col,
-                { md: 4 },
-                React.createElement('img', { src: this.props.streamInfo.preview.small })
-            ),
-            React.createElement(
-                Col,
-                { md: 4 },
+                { md: 10 },
+                React.createElement('img', { src: this.props.streamInfo.preview.small, className: 'twitchStreamRow-image' }),
                 this.props.streamInfo.channel.status
             ),
             React.createElement(
                 Col,
-                { md: 4 },
+                { md: 2 },
                 React.createElement(
                     Button,
-                    { onClick: this.openStream },
+                    { className: 'twitchStreamRow-openStreamButton', onClick: this.openStream },
                     'Open Stream'
                 )
             )
