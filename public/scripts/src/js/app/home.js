@@ -48694,7 +48694,7 @@ var Home = React.createClass({
 
 ReactDOM.render(React.createElement(Home, null), document.getElementById('content'));
 
-},{"../components/nav/mainNav":428,"../components/nav/widgetMenu":429,"react":421,"react-bootstrap":246,"react-dom":257}],427:[function(require,module,exports){
+},{"../components/nav/mainNav":429,"../components/nav/widgetMenu":430,"react":421,"react-bootstrap":246,"react-dom":257}],427:[function(require,module,exports){
 "use strict";
 
 //TODO: Use this component as a basis for a general "Twitch Embedded" component
@@ -48727,6 +48727,182 @@ var OverwatchOpenStream = React.createClass({
 module.exports = OverwatchOpenStream;
 
 },{"react":421}],428:[function(require,module,exports){
+'use strict';
+
+// TODO: Make this find a list of streams based off a dynamic game name
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Row = require('react-bootstrap').Row;
+var Col = require('react-bootstrap').Col;
+var Button = require('react-bootstrap').Button;
+var Glyphicon = require('react-bootstrap').Glyphicon;
+var $ = require('jquery');
+var WidgetContainer = require('../../widget/widgetContainer');
+
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
+var iframeTemplate = '<iframe src="http://player.twitch.tv/?channel={CHANNEL}" height="720" width="1280" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>';
+
+var TwitchStreamRow = React.createClass({
+    displayName: 'TwitchStreamRow',
+
+    propTypes: {
+        streamInfo: React.PropTypes.object
+    },
+    getInitialState: function getInitialState() {
+        return {
+            disableOpenButton: false
+        };
+    },
+    createDOMElement: function createDOMElement() {
+        // Make a unique id so we can create a new element and not collide with any other ids out there
+        var id = guid();
+
+        // Append the target element to the body
+        // TODO: See if there is a react-specific way to do this
+        $('body').append('<div id="' + id + '"></div>');
+
+        return id;
+    },
+    iframe: function iframe(channel) {
+        return {
+            __html: iframeTemplate.replace("{CHANNEL}", channel)
+        };
+    },
+    enableOpenStreamButton: function enableOpenStreamButton() {
+        this.setState({
+            disableOpenButton: false
+        });
+    },
+    openStream: function openStream() {
+        var id = this.createDOMElement();
+
+        ReactDOM.render(React.createElement(
+            WidgetContainer,
+            { closeCallback: this.enableOpenStreamButton, initialX: 100, initialY: 200, title: this.props.streamInfo.channel.status },
+            React.createElement('div', { dangerouslySetInnerHTML: this.iframe(this.props.streamInfo.channel.name) })
+        ), document.getElementById(id));
+
+        this.setState({
+            disableOpenButton: true
+        });
+    },
+    render: function render() {
+        var button = this.state.disableOpenButton ? React.createElement(
+            Button,
+            { disabled: true, className: 'twitchStreamRow-openStreamButton', onClick: this.openStream },
+            'Open Stream'
+        ) : React.createElement(
+            Button,
+            { className: 'twitchStreamRow-openStreamButton', onClick: this.openStream },
+            'Open Stream'
+        );
+
+        return React.createElement(
+            Row,
+            { className: 'twitchStreamRow' },
+            React.createElement(
+                Col,
+                { md: 10 },
+                React.createElement('img', { src: this.props.streamInfo.preview.small, className: 'twitchStreamRow-image' }),
+                this.props.streamInfo.channel.status
+            ),
+            React.createElement(
+                Col,
+                { md: 2 },
+                button
+            )
+        );
+    }
+});
+
+var TopTwitchStreams = React.createClass({
+    displayName: 'TopTwitchStreams',
+
+    getInitialState: function getInitialState() {
+        this.getStreams();
+        return {
+            streams: {},
+            error: false,
+            loading: true
+        };
+    },
+    getStreams: function getStreams() {
+        var innerThis = this;
+        $.ajax("https://api.twitch.tv/kraken/streams?game=Overwatch&limit=10", {
+            success: function success(resp) {
+                innerThis.setState({
+                    streams: resp.streams,
+                    error: false,
+                    loading: false
+                });
+            },
+            error: function error() {
+                innerThis.setState({
+                    streams: {},
+                    error: true,
+                    loading: false
+                });
+            }
+        });
+    },
+    refresh: function refresh() {
+        console.log("Refreshing");
+        this.setState({
+            streams: {},
+            error: false,
+            loading: true
+        });
+        this.setState(this.getStreams);
+    },
+    render: function render() {
+        if (this.state.loading) {
+            return React.createElement(
+                'div',
+                null,
+                'Loading...'
+            );
+        } else if (this.state.error) {
+            return React.createElement(
+                'div',
+                null,
+                'Whoops... encountered an error while trying to fetch stream list.'
+            );
+        }
+        var streamRows = this.state.streams.map(function (stream) {
+            return React.createElement(TwitchStreamRow, { key: stream._id, streamInfo: stream });
+        });
+
+        return React.createElement(
+            'div',
+            { className: 'twitchStreams-wrapper' },
+            streamRows,
+            React.createElement(
+                Row,
+                null,
+                React.createElement(
+                    Col,
+                    { md: 12 },
+                    React.createElement(
+                        Button,
+                        { className: 'topTwitchStreams-refreshButton', bsStyle: 'default', onClick: this.refresh },
+                        React.createElement(Glyphicon, { glyph: 'refresh' })
+                    )
+                )
+            )
+        );
+    }
+});
+
+module.exports = TopTwitchStreams;
+
+},{"../../widget/widgetContainer":431,"jquery":157,"react":421,"react-bootstrap":246,"react-dom":257}],429:[function(require,module,exports){
 "use strict";
 
 /**
@@ -48778,7 +48954,7 @@ var MainNav = React.createClass({
 
 module.exports = MainNav;
 
-},{"react":421,"react-bootstrap":246}],429:[function(require,module,exports){
+},{"react":421,"react-bootstrap":246}],430:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -48790,6 +48966,7 @@ var Button = require("react-bootstrap").Button;
 var Glyphicon = require("react-bootstrap").Glyphicon;
 var FormControl = require("react-bootstrap").FormControl;
 var $ = require('jquery');
+var TopStreams = require('../embed/twitch/topStreams');
 
 function guid() {
     function s4() {
@@ -48863,14 +49040,31 @@ var SelectWidgetMenu = React.createClass({
         // Go back to the add widget menu
         this.goBack();
     },
+    openTwitchStreams: function openTwitchStreams() {
+        var id = this.createDOMElement();
+
+        ReactDOM.render(React.createElement(
+            WidgetContainer,
+            { initialX: 100, initialY: 200, title: 'Top 10 Overwatch Streams' },
+            React.createElement(TopStreams, null)
+        ), document.getElementById(id));
+
+        // Go back to the add widget menu
+        this.goBack();
+    },
     render: function render() {
         return React.createElement(
             ButtonGroup,
             { vertical: true },
             React.createElement(
                 Button,
+                { onClick: this.openTwitchStreams },
+                'Top 10 Overwatch Streams'
+            ),
+            React.createElement(
+                Button,
                 { onClick: this.openStream },
-                'Overwatch Stream'
+                'Overwatch Open'
             ),
             React.createElement(
                 Button,
@@ -48923,7 +49117,7 @@ var WidgetMenu = React.createClass({
 
 module.exports = WidgetMenu;
 
-},{"../embed/twitch/overwatchopen":427,"../widget/widgetContainer":430,"jquery":157,"react":421,"react-bootstrap":246,"react-dom":257}],430:[function(require,module,exports){
+},{"../embed/twitch/overwatchopen":427,"../embed/twitch/topStreams":428,"../widget/widgetContainer":431,"jquery":157,"react":421,"react-bootstrap":246,"react-dom":257}],431:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -49067,7 +49261,10 @@ var WidgetContainer = React.createClass({
         initialHeight: React.PropTypes.string,
 
         // Whether we should allow the user to resize the widget
-        allowResize: React.PropTypes.bool
+        allowResize: React.PropTypes.bool,
+
+        // Function to run when the container 'closes'
+        closeCallback: React.PropTypes.func
     },
     getDefaultProps: function getDefaultProps() {
         var document = $('document');
@@ -49076,7 +49273,8 @@ var WidgetContainer = React.createClass({
             initialX: document.width / 2,
             initialY: document.height / 2,
             initialWidth: "700px",
-            initialHeight: "500px"
+            initialHeight: "500px",
+            closeCallback: function closeCallback() {}
         };
     },
     getInitialState: function getInitialState() {
@@ -49158,6 +49356,9 @@ var WidgetContainer = React.createClass({
         this.setState({ dragging: false });
     },
     closeWidget: function closeWidget() {
+        // Call the close callback that was given to the container
+        this.props.closeCallback();
+
         // Set the state to closed
         this.setState({ closed: true });
     },
