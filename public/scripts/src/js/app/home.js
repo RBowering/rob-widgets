@@ -48794,6 +48794,8 @@ var TwitchStreamRow = React.createClass({
         });
     },
     render: function render() {
+        // Disable the button if the stream is currently open
+        // TODO: Make the disable work after a stream list refresh
         var button = this.state.disableOpenButton ? React.createElement(
             Button,
             { disabled: true, className: 'twitchStreamRow-openStreamButton', onClick: this.openStream },
@@ -48834,8 +48836,12 @@ var TopTwitchStreams = React.createClass({
         };
     },
     getStreams: function getStreams() {
+        // Get our stream list then set the state accordingly
         var innerThis = this;
         $.ajax("https://api.twitch.tv/kraken/streams?game=Overwatch&limit=10", {
+            headers: {
+                "Client-ID": "qh5u1ijoshfo2pghf01ianulezryatr"
+            },
             success: function success(resp) {
                 innerThis.setState({
                     streams: resp.streams,
@@ -48853,32 +48859,42 @@ var TopTwitchStreams = React.createClass({
         });
     },
     refresh: function refresh() {
-        console.log("Refreshing");
+        // Set our state to loading
         this.setState({
             streams: {},
             error: false,
             loading: true
         });
-        this.setState(this.getStreams);
+
+        // Get the stream list
+        this.getStreams();
     },
     render: function render() {
+        // If we're loading show a loading message
+        // TODO: Make this a spinner
         if (this.state.loading) {
             return React.createElement(
                 'div',
                 null,
                 'Loading...'
             );
-        } else if (this.state.error) {
-            return React.createElement(
-                'div',
-                null,
-                'Whoops... encountered an error while trying to fetch stream list.'
-            );
         }
+
+        // If there's an error, let the user know
+        else if (this.state.error) {
+                return React.createElement(
+                    'div',
+                    null,
+                    'Whoops... encountered an error while trying to fetch stream list.'
+                );
+            }
+
+        // Make our rows
         var streamRows = this.state.streams.map(function (stream) {
             return React.createElement(TwitchStreamRow, { key: stream._id, streamInfo: stream });
         });
 
+        // Not loading, no errors, show the list of streams
         return React.createElement(
             'div',
             { className: 'twitchStreams-wrapper' },

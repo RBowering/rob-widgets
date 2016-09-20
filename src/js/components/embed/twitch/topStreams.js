@@ -96,6 +96,9 @@ var TopTwitchStreams = React.createClass({
         // Get our stream list then set the state accordingly
         var innerThis = this;
         $.ajax("https://api.twitch.tv/kraken/streams?game=Overwatch&limit=10", {
+            headers: {
+                "Client-ID": "qh5u1ijoshfo2pghf01ianulezryatr"
+            },
             success: function(resp) {
                 innerThis.setState({
                     streams: resp.streams,
