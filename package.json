@@ -24,6 +24,7 @@
     "gulp-clean-css": "^2.0.12",
     "gulp-watch": "^4.3.9",
     "jquery": "^3.1.0",
+    "myo": "^2.1.1",
     "react-native": "^0.32.0",
     "vinyl-source-stream": "^1.1.0"
   },
@@ -38,11 +39,11 @@
   "keywords": [
     "react"
   ],
-  "author": "petehunt",
+  "author": "toxicsockwarrrior",
   "bugs": {
-    "url": "https://github.com/reactjs/react-tutorial/issues"
+    "url": "https://github.com/ToxicSockWarrior/rob-widgets/issues"
   },
-  "homepage": "https://github.com/reactjs/react-tutorial",
+  "homepage": "https://github.com/ToxicSockWarrior/rob-widgets",
   "engines": {
     "node": "0.12.x"
   }

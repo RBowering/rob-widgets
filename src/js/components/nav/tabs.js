@@ -1,14 +1,10 @@
 var React = require("react");
-var ReactDOM = require("react-dom");
 var Tabs = require("react-bootstrap").Tabs;
 var Tab = require("react-bootstrap").Tab;
 var Grid = require("react-bootstrap").Grid;
 var Row = require("react-bootstrap").Row;
 var Col = require("react-bootstrap").Col;
 var Well = require("react-bootstrap").Well;
-var Button = require("react-bootstrap").Button;
-var WidgetContainer = require("../widget/widgetContainer");
-var OverWatchOpen = require("../embed/twitch/overwatchopen");
 
 var TabNav = React.createClass({
     propTypes: {

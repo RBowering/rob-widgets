@@ -113,7 +113,7 @@ var WidgetHeader = React.createClass({
 });
 
 // TODO: Add ability to resize the widget window
-var WidgetContainer = React.createClass({
+var Widget = React.createClass({
     propTypes: {
         // Our initial X and Y position
         initialX: React.PropTypes.number,
@@ -241,7 +241,7 @@ var WidgetContainer = React.createClass({
                        header={<WidgetHeader defaultExpanded={true} collapseCallback={this.toggleCollapse}
                                              onMouseDown={this.startDrag} title={this.props.title}
                                              closeWidgetCallback={this.closeWidget}/>}
-                       style={this.state.styles} className="widgetContainer">
+                       style={this.state.styles} className="widget">
                     {this.props.children}
                 </Panel>
             )
@@ -249,4 +249,4 @@ var WidgetContainer = React.createClass({
     }
 });
 
-module.exports = WidgetContainer;
+module.exports = Widget;

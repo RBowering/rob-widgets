@@ -7,7 +7,7 @@ var Col = require('react-bootstrap').Col;
 var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 var $ = require('jquery');
-var WidgetContainer = require('../../widget/widgetContainer');
+var Widget = require('../../widget/widget');
 
 function guid() {
     function s4() {
@@ -35,7 +35,6 @@ var TwitchStreamRow = React.createClass({
         var id = guid();
 
         // Append the target element to the body
-        // TODO: See if there is a react-specific way to do this
         $('body').append('<div id="' + id + '"></div>');
 
         return id;
@@ -54,9 +53,9 @@ var TwitchStreamRow = React.createClass({
         var id = this.createDOMElement();
 
         ReactDOM.render(
-            <WidgetContainer closeCallback={this.enableOpenStreamButton} initialX={150} initialY={200} title={this.props.streamInfo.channel.status}>
+            <Widget closeCallback={this.enableOpenStreamButton} initialX={150} initialY={200} title={this.props.streamInfo.channel.status}>
                 <div dangerouslySetInnerHTML={this.iframe(this.props.streamInfo.channel.name)}></div>
-            </WidgetContainer>,
+            </Widget>,
             document.getElementById(id));
 
         this.setState({
@@ -65,7 +64,7 @@ var TwitchStreamRow = React.createClass({
     },
     render: function () {
         // Disable the button if the stream is currently open
-        // TODO: Make the disable work after a stream list refresh
+        // TODO: Make the disable work after a stream list refresh. {disabled: [192834, 1348249, 2932493]} make a pass to set the disabled after loading the game list. Do some data pruning to get a hashmap based off _id?
         var button = this.state.disableOpenButton ? <Button disabled className="twitchStreamRow-openStreamButton" onClick={this.openStream}>Open Stream</Button> : <Button className="twitchStreamRow-openStreamButton" onClick={this.openStream}>Open Stream</Button>;
 
         return (

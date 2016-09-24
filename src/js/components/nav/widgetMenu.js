@@ -1,6 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
-var WidgetContainer = require('../widget/widgetContainer');
+var Widget = require('../widget/widget');
 var OverWatchOpen = require("../embed/twitch/overwatchopen");
 var ButtonGroup = require("react-bootstrap").ButtonGroup;
 var Button = require("react-bootstrap").Button;
@@ -54,9 +54,9 @@ var SelectWidgetMenu = React.createClass({
         var id = this.createDOMElement();
 
         ReactDOM.render(
-            <WidgetContainer initialX={100} initialY={300} title="Overwatch Open">
+            <Widget initialX={100} initialY={300} title="Overwatch Open">
                 <OverWatchOpen/>
-            </WidgetContainer>,
+            </Widget>,
             document.getElementById(id));
 
         // Go back to the add widget menu
@@ -66,9 +66,9 @@ var SelectWidgetMenu = React.createClass({
         var id = this.createDOMElement();
 
         ReactDOM.render(
-            <WidgetContainer initialX={100} initialY={200} title="Sticky Note">
+            <Widget initialX={100} initialY={200} title="Sticky Note">
                 <FormControl componentClass="textarea" placeholder="..."/>
-            </WidgetContainer>,
+            </Widget>,
             document.getElementById(id));
 
         // Go back to the add widget menu
@@ -78,9 +78,9 @@ var SelectWidgetMenu = React.createClass({
         var id = this.createDOMElement();
 
         ReactDOM.render(
-            <WidgetContainer initialX={100} initialY={100} title="Top 10 Overwatch Streams">
+            <Widget initialX={100} initialY={100} title="Top 10 Overwatch Streams">
                 <TopStreams/>
-            </WidgetContainer>,
+            </Widget>,
             document.getElementById(id)
         );
 
