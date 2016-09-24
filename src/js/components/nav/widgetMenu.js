@@ -8,6 +8,7 @@ var Glyphicon = require("react-bootstrap").Glyphicon;
 var FormControl = require("react-bootstrap").FormControl;
 var $ = require('jquery');
 var TopStreams = require('../embed/twitch/topStreams');
+var Guid = require("../../helpers/guid");
 
 function guid() {
     function s4() {
@@ -42,7 +43,7 @@ var SelectWidgetMenu = React.createClass({
     },
     createDOMElement: function () {
         // Make a unique id so we can create a new element and not collide with any other ids out there
-        var id = guid();
+        var id = Guid();
 
         // Append the target element to the body
         // TODO: See if there is a react-specific way to do this

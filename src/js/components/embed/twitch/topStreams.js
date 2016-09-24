@@ -8,16 +8,7 @@ var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 var $ = require('jquery');
 var Widget = require('../../widget/widget');
-
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
+var Guid = require("../../../helpers/guid");
 
 var iframeTemplate = '<iframe src="http://player.twitch.tv/?channel={CHANNEL}" height="720" width="1280" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>';
 
@@ -32,7 +23,7 @@ var TwitchStreamRow = React.createClass({
     },
     createDOMElement: function () {
         // Make a unique id so we can create a new element and not collide with any other ids out there
-        var id = guid();
+        var id = Guid();
 
         // Append the target element to the body
         $('body').append('<div id="' + id + '"></div>');
