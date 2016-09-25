@@ -10,16 +10,6 @@ var $ = require('jquery');
 var TopStreams = require('../embed/twitch/topStreams');
 var Guid = require("../../helpers/guid");
 
-function guid() {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000)
-            .toString(16)
-            .substring(1);
-    }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
-
 var AddWidgetButton = React.createClass({
     propTypes: {
         changeMenuCallback: React.PropTypes.func
@@ -43,10 +33,9 @@ var SelectWidgetMenu = React.createClass({
     },
     createDOMElement: function () {
         // Make a unique id so we can create a new element and not collide with any other ids out there
-        var id = Guid();
+        var id = Guid.createGuid();
 
         // Append the target element to the body
-        // TODO: See if there is a react-specific way to do this
         $('body').append('<div id="' + id + '"></div>');
 
         return id;

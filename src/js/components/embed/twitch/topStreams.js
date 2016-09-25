@@ -1,5 +1,3 @@
-// TODO: Make this find a list of streams based off a dynamic game name
-
 var React = require('react');
 var ReactDOM = require('react-dom');
 var Row = require('react-bootstrap').Row;
@@ -8,112 +6,86 @@ var Button = require('react-bootstrap').Button;
 var Glyphicon = require('react-bootstrap').Glyphicon;
 var $ = require('jquery');
 var Widget = require('../../widget/widget');
-var Guid = require("../../../helpers/guid");
-
-var iframeTemplate = '<iframe src="http://player.twitch.tv/?channel={CHANNEL}" height="720" width="1280" frameborder="0" scrolling="no" allowfullscreen="true"></iframe>';
+var TopStreamsStore = require("../../../stores/topStreamsStore");
+var TopStreamsActions = require("../../../actions/topStreamsActions");
 
 var TwitchStreamRow = React.createClass({
     propTypes: {
-        streamInfo: React.PropTypes.object
+        streamId: React.PropTypes.number
     },
     getInitialState: function () {
-        return {
-            disableOpenButton: false
-        };
+        return TopStreamsStore.getStream(this.props.streamId);
+    },
+    componentDidMount: function () {
+        TopStreamsStore.addChangeListener(this.update);
+    },
+    componentWillUnmount: function () {
+        TopStreamsStore.removeChangeListener(this.update);
     },
     createDOMElement: function () {
-        // Make a unique id so we can create a new element and not collide with any other ids out there
-        var id = Guid();
-
         // Append the target element to the body
-        $('body').append('<div id="' + id + '"></div>');
-
-        return id;
+        $('body').append('<div id="' + this.state.widgetDomId + '"></div>');
     },
-    iframe: function (channel) {
+    iframe: function () {
         return {
-            __html: iframeTemplate.replace("{CHANNEL}", channel)
+            __html: this.state.iframeSrc
         }
     },
-    enableOpenStreamButton: function () {
-        this.setState({
-            disableOpenButton: false
-        }) ;
+    closeStream: function () {
+        TopStreamsActions.closeStream(this.props.streamId);
+        // Remove our anchor point
+        $("#" + this.state.widgetDomId).remove();
     },
     openStream: function () {
-        var id = this.createDOMElement();
+        // Create an "anchor point" to initiate the widget at
+        this.createDOMElement();
 
         ReactDOM.render(
-            <Widget closeCallback={this.enableOpenStreamButton} initialX={150} initialY={200} title={this.props.streamInfo.channel.status}>
-                <div dangerouslySetInnerHTML={this.iframe(this.props.streamInfo.channel.name)}></div>
+            <Widget closeCallback={this.closeStream} initialX={150} initialY={200} title={this.state.streamInfo.channel.status}>
+                <div dangerouslySetInnerHTML={this.iframe(this.state.streamInfo.channel.name)}></div>
             </Widget>,
-            document.getElementById(id));
+            document.getElementById(this.state.widgetDomId));
 
-        this.setState({
-            disableOpenButton: true
-        });
+        TopStreamsActions.openStream(this.props.streamId);
     },
     render: function () {
         // Disable the button if the stream is currently open
-        // TODO: Make the disable work after a stream list refresh. {disabled: [192834, 1348249, 2932493]} make a pass to set the disabled after loading the game list. Do some data pruning to get a hashmap based off _id?
         var button = this.state.disableOpenButton ? <Button disabled className="twitchStreamRow-openStreamButton" onClick={this.openStream}>Open Stream</Button> : <Button className="twitchStreamRow-openStreamButton" onClick={this.openStream}>Open Stream</Button>;
 
         return (
             <Row className="twitchStreamRow">
                 <Col md={10}>
-                    <img src={this.props.streamInfo.preview.small} className="twitchStreamRow-image"/>
+                    <img src={this.state.streamInfo.preview.small} className="twitchStreamRow-image"/>
 
-                    {this.props.streamInfo.channel.status}
+                    {this.state.streamInfo.channel.status}
                 </Col>
                 <Col md={2}>
                     {button}
                 </Col>
             </Row>
         )
+    },
+
+    update: function () {
+        this.setState(TopStreamsStore.getStream(this.props.streamId));
     }
 });
 
 var TopTwitchStreams = React.createClass({
     getInitialState: function () {
-        this.getStreams();
-        return {
-            streams: {},
-            error: false,
-            loading: true
-        };
+        TopStreamsActions.refreshStreams();
+        return TopStreamsStore.getState()
+    },
+    componentDidMount: function () {
+        TopStreamsStore.addChangeListener(this.update);
+    },
+    componentWillUnmount: function () {
+        TopStreamsStore.removeChangeListener(this.update);
     },
     getStreams: function () {
-        // Get our stream list then set the state accordingly
-        var innerThis = this;
-        $.ajax("https://api.twitch.tv/kraken/streams?game=Overwatch&limit=10", {
-            headers: {
-                "Client-ID": "qh5u1ijoshfo2pghf01ianulezryatr"
-            },
-            success: function(resp) {
-                innerThis.setState({
-                    streams: resp.streams,
-                    error: false,
-                    loading: false
-                })
-            },
-            error: function () {
-                innerThis.setState({
-                    streams: {},
-                    error: true,
-                    loading: false
-                });
-            }
-        });
+        TopStreamsActions.refreshStreams();
     },
     refresh: function () {
-        // Set our state to loading
-        this.setState({
-            streams: {},
-            error: false,
-            loading: true
-        });
-
-        // Get the stream list
         this.getStreams();
     },
     render: function () {
@@ -133,8 +105,8 @@ var TopTwitchStreams = React.createClass({
         }
 
         // Make our rows
-        var streamRows = this.state.streams.map(function(stream) {
-            return <TwitchStreamRow key={stream._id} streamInfo={stream}/>
+        var streamRows = this.state.rows.map(function (stream) {
+            return <TwitchStreamRow key={stream.streamInfo._id} streamId={stream.streamInfo._id}/>
         });
 
         // Not loading, no errors, show the list of streams
@@ -143,14 +115,18 @@ var TopTwitchStreams = React.createClass({
                 {streamRows}
 
                 <Row>
-                <Col md={12}>
-                    <Button className="topTwitchStreams-refreshButton" bsStyle="default" onClick={this.refresh}>
-                        <Glyphicon glyph="refresh"/>
-                    </Button>
-                </Col>
+                    <Col md={12}>
+                        <Button className="topTwitchStreams-refreshButton" bsStyle="default" onClick={this.refresh}>
+                            <Glyphicon glyph="refresh"/>
+                        </Button>
+                    </Col>
                 </Row>
             </div>
         )
+    },
+
+    update: function () {
+        this.setState(TopStreamsStore.getState);
     }
 });
 
