@@ -50281,12 +50281,6 @@ var TwitchStreamRow = React.createClass({
     getInitialState: function getInitialState() {
         return TopStreamsStore.getStream(this.props.streamId);
     },
-    componentDidMount: function componentDidMount() {
-        TopStreamsStore.addChangeListener(this.update);
-    },
-    componentWillUnmount: function componentWillUnmount() {
-        TopStreamsStore.removeChangeListener(this.update);
-    },
     createDOMElement: function createDOMElement() {
         // Append the target element to the body
         $('body').append('<div id="' + this.state.widgetDomId + '"></div>');
@@ -50300,6 +50294,7 @@ var TwitchStreamRow = React.createClass({
         TopStreamsActions.closeStream(this.props.streamId);
         // Remove our anchor point
         $("#" + this.state.widgetDomId).remove();
+        this.setState({ disableOpenButton: false });
     },
     openStream: function openStream() {
         // Create an "anchor point" to initiate the widget at
@@ -50312,6 +50307,7 @@ var TwitchStreamRow = React.createClass({
         ), document.getElementById(this.state.widgetDomId));
 
         TopStreamsActions.openStream(this.props.streamId);
+        this.setState({ disableOpenButton: true });
     },
     render: function render() {
         // Disable the button if the stream is currently open
